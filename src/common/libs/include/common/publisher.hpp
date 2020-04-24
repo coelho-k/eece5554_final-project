@@ -283,6 +283,16 @@ static void publishObjectsMarkers(
         box.header = dir_arrow.header = header;
         box.ns = dir_arrow.ns = "objects";
         box.id = obj;
+        // CUSTOM CODE -VV
+        if (objects_array[obj]->type == PEDESTRIAN) {
+            dir_arrow.text = "PEDESTRIAN";
+            box.text = "PEDESTRIAN";
+        }
+        else if (objects_array[obj]->type == CAR){
+            dir_arrow.text = "CAR";
+            box.text = "CAR";
+        }
+        // END CUSTOM CODE
         dir_arrow.id = obj + objects_array.size();
         box.type = visualization_msgs::Marker::LINE_LIST;
         dir_arrow.type = visualization_msgs::Marker::ARROW;
@@ -496,6 +506,12 @@ static void publishObjectsVelocityArrow(
             // Eigen::Vector3f::UnitZ());
             vel_text.pose.orientation.w = yaw_rad;
             /// @note filter 0.00m/s
+
+            std_msgs::ColorRGBA new_color;
+            new_color.a = 1.0;
+            new_color.r = 0.0;
+            new_color.g = 0.0;
+            new_color.b = 0.0;
             if (vel_scalar > common::EPSILON) {
                 std::stringstream vel_str;
                 // fixed：表示普通方式输出，不采用科学计数法。
@@ -503,13 +519,23 @@ static void publishObjectsVelocityArrow(
                         << std::setfill('0') << vel_scalar;
 
                 vel_text.text = vel_str.str();
-                if (vel_scalar > 0.1) {
-                    vel_text.text = vel_text.text + " PEDESTRIAN ";
+                // CUSTOM CODE -VV
+                if (vel_scalar > 0.1 && vel_scalar <= 1.4) {
+                    vel_text.text = vel_text.text + " m/s PEDESTRIAN ";
+                    new_color.b = 1.0;
                 }
-                vel_text.text = vel_text.text + " m/s";
+                else if(vel_scalar > 1.4) {
+                    vel_text.text = vel_text.text + " m/s BIKER ";
+                    new_color.g = 1.0;
+                }
+                else {
+                    vel_text.text = vel_text.text + " m/s";
+                    new_color.r = 1.0;
+                }
+                // END CUSTOM CODE
             }
             vel_text.scale.z = 0.7;
-            vel_text.color = color;
+            vel_text.color = new_color;
             if (!is_offline_keep_alive) {
                 vel_text.lifetime = ros::Duration(0.5);
             }

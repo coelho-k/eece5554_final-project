@@ -2,7 +2,7 @@ detect: {
   frame_id: "vlp16_port",
 
   # sub_pc_topic: "/kitti/velo/pointcloud", # KITTI
-  sub_pc_topic: "/ns2/velodyne_points",     # OURS
+  sub_pc_topic: "/ns1/velodyne_points",     # OURS
   sub_pc_queue_size: 1,
 
   pub_pc_ground_topic: "/segmenter/points_ground",
