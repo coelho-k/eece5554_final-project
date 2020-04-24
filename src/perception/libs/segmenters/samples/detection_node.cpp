@@ -97,7 +97,7 @@ void OnPointCloud(const sensor_msgs::PointCloud2ConstPtr& ros_pc2) {
 
                 int numPerson = 0;
                 int numCar = 0;
-                for (int i = 0; i < objects.size(); i++) {
+                for (int i = 0; i < objects.size(); i ++) {
                         if (objects[i]->type == PEDESTRIAN) {
                                 numPerson++;
                         }

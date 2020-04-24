@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python  
 import roslib
 import rospy
 import tf
@@ -12,30 +12,21 @@ import logging
 import gps_converter
 
 
-# all arrays are in the following format
-# [easting northing]
+isFirst = True
 startEN = [-1, -1]
-currEN = [-1, -1]
+eastNorth = [-1, -1]
 
-def tfHandler(data):
-    global startEN
-    global currEN
-    rospy.loginfo('I heard GPS')
-    if (startEN[0] == -1 and startEN[1] == -1):
-        startEN = convertToUTM(data)
-        
-    currEN = convertToUTM(data)
-    
-    eastDiff = currEN[0] - startEN[0]
-    northDiff = currEN[1] - startEN[1]
-
-    br = tf.TransformBroadcaster()
-    br.sendTransform((eastDiff, northDiff, 0.0),
-                     (0.0, 0.0, 0.0, 1.0),
-                     rospy.Time.now(),
-                     "base_footprint",
-                     "world")
-    rospy.loginfo('I sent a transform [' + str(eastDiff) + ', ' + str(northDiff) + ']')
+def gps_callback(data):
+    global isFirst, eastNorth, startEN
+    if (data is not None):
+        if (isFirst):
+            startGPS = data
+            isFirst = False
+            startEN = convertToUTM(data)
+            rospy.loginfo("Start [Easting, Northing]: " + str(startEN))
+        #end if
+    eastNorth = convertToUTM(data)
+# end def
 
 # to convert the NavSatFix data to utm coordinates
 def convertToUTM(gps_data):
@@ -46,8 +37,24 @@ def convertToUTM(gps_data):
     return values
 
 
+# World Frame Publisher
 if __name__ == '__main__':
-    rospy.init_node('world_pub', anonymous=True)
-    rospy.Subscriber("/vehicle/gps/fix", NavSatFix, tfHandler)
-    rospy.loginfo('Starting World Publisher')
-    rospy.spin()
+    rospy.init_node('world_tf_broadcaster')
+    rospy.loginfo('Starting World Frame Publisher ...')
+    rospy.wait_for_message("/vehicle/gps/fix", NavSatFix)
+    rospy.Subscriber("/vehicle/gps/fix", NavSatFix, gps_callback)
+
+    br = tf.TransformBroadcaster()
+    rate = rospy.Rate(10000.0)
+    eastDiff = 0
+    northDiff = 0
+    while not rospy.is_shutdown():
+        eastDiff = eastNorth[0] - startEN[0]
+        northDiff = eastNorth[1] - startEN[1]
+        rospy.loginfo("East Diff: " + str(eastDiff) + "\nNorth Diff: " + str(northDiff))
+        br.sendTransform((eastDiff, northDiff, 0.0),
+                         (0.0, 0.0, 0.0, 1.0),
+                         rospy.Time.now(),
+                         "base_footprint",
+                         "world")
+        rate.sleep()
