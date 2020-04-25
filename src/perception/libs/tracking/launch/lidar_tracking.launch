@@ -15,7 +15,7 @@
     </node>
 
     <!-- Launch rviz for visualization -->
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find tracking_lib)/rviz/demo.rviz"/>
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find tracking_lib)/rviz/final_project.rviz"/>
 
     <!-- Launch World Transform Node -->
     <node name="world_pub" pkg="tracking_lib" type="world_pub.py" />
