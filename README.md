@@ -14,7 +14,7 @@
 3. Run `catkin_make` or `catkin build` based on your desired build approach
 4. Run `source devel/setup.bash`
 5. Run `roscore`
-6. In a new terminal, run `roslaunch lidar_tracking.launch`
+6. In a new terminal, run `roslaunch tracking_lib lidar_tracking.launch`
 7. In another new terminal, start playback for the `LIDAR_mapping_bicycle_pedestrian_detection` bag file (from the provided Google Drive in class)
    
 ### What to expect
