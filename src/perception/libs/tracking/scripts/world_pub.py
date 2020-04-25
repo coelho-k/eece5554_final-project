@@ -39,7 +39,7 @@ def convertToUTM(gps_data):
 
 # World Frame Publisher
 if __name__ == '__main__':
-    rospy.init_node('world_tf_broadcaster')
+    rospy.init_node('world_pub')
     rospy.loginfo('Starting World Frame Publisher ...')
     rospy.wait_for_message("/vehicle/gps/fix", NavSatFix)
     rospy.Subscriber("/vehicle/gps/fix", NavSatFix, gps_callback)
