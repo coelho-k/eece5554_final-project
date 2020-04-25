@@ -14,9 +14,8 @@
 3. Run `catkin_make` or `catkin build` based on your desired build approach
 4. Run `source devel/setup.bash`
 5. Ensure that `source devel/setup.bash` is also in your ~/.bashrc
-5. Run `roscore`
-6. In a new terminal, run `roslaunch tracking_lib lidar_tracking.launch`
-7. In another new terminal, start playback for the `LIDAR_mapping_bicycle_pedestrian_detection` bag file (from the provided Google Drive in class)
+6. Run `roslaunch tracking_lib lidar_tracking.launch`
+7. In a new terminal, start playback for the `LIDAR_mapping_bicycle_pedestrian_detection` bag file (from the provided Google Drive in class)
    
 ### What to expect
 1. An `RVIZ` Window will open with the orignal LiDAR feed overlayed with the object tracking highlighting
